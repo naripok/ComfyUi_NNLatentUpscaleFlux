@@ -149,9 +149,17 @@ class ResBlockEmb(nn.Module):
 
 
 class LatentResizer(nn.Module):
-    def __init__(self, in_blocks=10, out_blocks=10, channels=128, dropout=0, attn=True):
+    def __init__(
+        self,
+        in_blocks=10,
+        out_blocks=10,
+        channels=128,
+        latent_channels=16,
+        dropout=0,
+        attn=True,
+    ):
         super().__init__()
-        self.conv_in = nn.Conv2d(4, channels, 3, padding=1)
+        self.conv_in = nn.Conv2d(latent_channels, channels, 3, padding=1)
 
         self.channels = channels
         embed_dim = 32
@@ -174,14 +182,16 @@ class LatentResizer(nn.Module):
             self.out_blocks.append(ResBlockEmb(channels, embed_dim, dropout))
 
         self.norm_out = normalization(channels)
-        self.conv_out = nn.Conv2d(channels, 4, 3, padding=1)
+        self.conv_out = nn.Conv2d(channels, latent_channels, 3, padding=1)
 
     @classmethod
     def load_model(cls, filename, device="cpu", dtype=torch.float32, dropout=0):
-        if not 'weights_only' in torch.load.__code__.co_varnames:
+        if not "weights_only" in torch.load.__code__.co_varnames:
             weights = torch.load(filename, map_location=torch.device("cpu"))
         else:
-            weights = torch.load(filename, map_location=torch.device("cpu"), weights_only=True)
+            weights = torch.load(
+                filename, map_location=torch.device("cpu"), weights_only=True
+            )
         in_blocks = 0
         out_blocks = 0
         in_tfs = 0
