@@ -26,7 +26,7 @@ Clone this repository in ComfyUI `custom_nodes` directory with: `git clone https
 
 ![Example 2](./examples/upscale.jpg)
 
-Dataset: [COCO 2017](https://cocodataset.org.org) validation images center
+Dataset: [COCO 2017](https://cocodataset.org) validation images center
 cropped to 256x256 resolution. The comparison image is linear upscale of the
 input image. All tests are done with fp32 precision and batch size 4.
 
@@ -85,5 +85,11 @@ python create_dataset.py --source_dir ./data/train_dir --output_dir ./data
 3. Train:
 
 ```sh
-python training/flux/latent_resizer_train.py --train_path ../data/train --test_path ../data/test --vae_path ../data/FLUX.1-dev/vae --fp16 --gradient_checkpointing --batch_size 1
+python -m training.flux.latent_resizer_train --train_path ./data/train --test_path ./data/eval --vae_path ./data/FLUX.1-dev/vae --fp16 --gradient_checkpointing --batch_size 1
+```
+
+4. Test:
+
+```sh
+python -m training.flux.evaluation --test_path ./data/test --vae_path ./data/FLUX.1-dev/vae --resizer_path ./flux_resizer.pt --resolution 256 --scale 2 --batch_size 4 --resizer_only
 ```
