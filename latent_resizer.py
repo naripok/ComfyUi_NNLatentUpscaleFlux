@@ -154,12 +154,12 @@ class LatentResizer(nn.Module):
         in_blocks=10,
         out_blocks=10,
         channels=128,
-        latent_channels=16,
+        latent_dim=16,
         dropout=0,
         attn=True,
     ):
         super().__init__()
-        self.conv_in = nn.Conv2d(latent_channels, channels, 3, padding=1)
+        self.conv_in = nn.Conv2d(latent_dim, channels, 3, padding=1)
 
         self.channels = channels
         embed_dim = 32
@@ -182,7 +182,7 @@ class LatentResizer(nn.Module):
             self.out_blocks.append(ResBlockEmb(channels, embed_dim, dropout))
 
         self.norm_out = normalization(channels)
-        self.conv_out = nn.Conv2d(channels, latent_channels, 3, padding=1)
+        self.conv_out = nn.Conv2d(channels, latent_dim, 3, padding=1)
 
     @classmethod
     def load_model(cls, filename, device="cpu", dtype=torch.float32, dropout=0):
@@ -197,6 +197,7 @@ class LatentResizer(nn.Module):
         in_tfs = 0
         out_tfs = 0
         channels = weights["conv_in.bias"].shape[0]
+        latent_dim = weights["conv_in.weight"].shape[1]
         for k in weights.keys():
             k = k.split(".")
             if k[0] == "in_blocks":
@@ -213,6 +214,7 @@ class LatentResizer(nn.Module):
             in_blocks=in_blocks,
             out_blocks=out_blocks,
             channels=channels,
+            latent_dim=latent_dim,
             dropout=dropout,
             attn=(out_tfs != 0),
         )
