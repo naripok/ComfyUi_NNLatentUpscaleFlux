@@ -6,12 +6,11 @@ import lpips
 import numpy as np
 import torch
 from diffusers.models.autoencoders.autoencoder_kl import AutoencoderKL
+from latent_resizer import LatentResizer
 from PIL import Image
 from pytorch_msssim import ssim
 from torchvision import transforms
 from tqdm import tqdm
-
-from flux.latent_resizer import LatentResizer
 
 
 def psnr(x, ref, maxg=2):
