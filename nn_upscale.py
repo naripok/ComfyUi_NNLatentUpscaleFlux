@@ -18,9 +18,9 @@ class NNLatentUpscale:
         if model_management.should_use_fp16():
             self.dtype = torch.float16
         self.weight_path = {
+            "Flux1.D": os.path.join(self.local_dir, "flux_resizer.pt"),
             "SDXL": os.path.join(self.local_dir, "sdxl_resizer.pt"),
             "SD 1.x": os.path.join(self.local_dir, "sd15_resizer.pt"),
-            "Flux1.D": os.path.join(self.local_dir, "flux_resizer.pt"),
         }
         self.version = "none"
 
@@ -29,7 +29,7 @@ class NNLatentUpscale:
         return {
             "required": {
                 "latent": ("LATENT",),
-                "version": (["SDXL", "SD 1.x", "Flux1.D"],),
+                "version": (["Flux1.D", "SDXL", "SD 1.x"],),
                 "upscale": (
                     "FLOAT",
                     {
